@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import db from "../services/firebase";
 
 const AdminPage = () => {
-  const [parameters, setParameters] = useState([]);
-  const [correlatives, setCorrelatives] = useState({});
+  const [parameters, setParameters] = useState([]); // Estado para almacenar los parámetros
   const [email, setEmail] = useState(""); // Estado para almacenar el correo
   const [isEditingEmail, setIsEditingEmail] = useState(false); // Estado para controlar si se está editando el correo
   const [newEmail, setNewEmail] = useState(""); // Estado para el nuevo correo
@@ -19,20 +18,36 @@ const AdminPage = () => {
       return;
     }
 
-    // Obtener el correo del documento Datos
+    // Obtener parámetros desde Firestore
+    const unsubscribe = onSnapshot(
+      collection(db, "MainServer", "Datos", "Parametros"),
+      (snapshot) => {
+        const params = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setParameters(params); // Actualizar el estado con los parámetros
+      }
+    );
+
+    // Obtener el correo desde Firestore
     const fetchEmail = async () => {
       try {
-        const datosRef = doc(db, "MainServer", "Datos");
-        const datosSnapshot = await getDoc(datosRef);
-        if (datosSnapshot.exists()) {
-          setEmail(datosSnapshot.data().correo); // Asignar el valor del campo correo
+        const docRef = doc(db, "MainServer", "Datos");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setEmail(docSnap.data().correo); // Actualizar el estado con el correo
+        } else {
+          console.error("No se encontró el documento.");
         }
       } catch (error) {
         console.error("Error al obtener el correo:", error);
       }
     };
 
-    fetchEmail(); // Llamar a la función para obtener el correo
+    fetchEmail();
+
+    return () => unsubscribe(); // Limpiar la suscripción
   }, [navigate]);
 
   const handleLogout = () => {
@@ -85,6 +100,7 @@ const AdminPage = () => {
         </div>
       </div>
 
+      {/* Mostrar parámetros existentes */}
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-2">Parámetros Existentes</h2>
         <ul className="list-disc pl-5">
@@ -95,13 +111,13 @@ const AdminPage = () => {
                   {param.id} - {param.Valor}
                 </span>
                 <button
-                  onClick={() => navigate(`/admin-parameter/${param.id}`)}
+                  onClick={() => navigate(`/admin-parameter/${param.id}`)} // Navegar a la página de edición
                   className="text-yellow-500 hover:text-yellow-700"
                 >
                   ✏️
                 </button>
                 <button
-                  onClick={() => console.log("Eliminar parámetro")}
+                  onClick={() => console.log("Eliminar parámetro")} // Aquí puedes agregar la lógica para eliminar
                   className="text-red-500 hover:text-red-700"
                 >
                   🗑️
