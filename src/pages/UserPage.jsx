@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
-import emailjs from "emailjs-com"; // Importar EmailJS
+import emailjs from "emailjs-com"; 
 import db from "../services/firebase";
 
 const UserPage = () => {
@@ -156,13 +156,13 @@ const UserPage = () => {
       message: emailMessage,
     };
   
-    emailjs.init("x0-vxAmaDFJoDqpBJ"); // Reemplaza con tu Public Key
+    emailjs.init("Public_Key"); // Reemplaza con tu Public Key
   
     // Enviar correo al administrador
     emailjs
       .send(
-        "service_gv1sh0d", // Reemplaza con tu Service ID
-        "template_0sska2b", // Reemplaza con tu Template ID
+        "service_ID", // Reemplaza con tu Service ID
+        "template_ID", // Reemplaza con tu Template ID
         adminEmailData
       )
       .then(
@@ -177,8 +177,8 @@ const UserPage = () => {
     // Enviar correo al usuario
     emailjs
       .send(
-        "service_gv1sh0d", // Reemplaza con tu Service ID
-        "template_0sska2b", // Reemplaza con tu Template ID
+        "service_ID", // Reemplaza con tu Service ID
+        "template_ID", // Reemplaza con tu Template ID
         userEmailData
       )
       .then(

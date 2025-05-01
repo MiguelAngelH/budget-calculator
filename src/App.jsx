@@ -15,16 +15,16 @@ function App() {
             path="/"
             element={
               <div className="text-center text-white">
-                <h1 className="text-3xl font-bold mb-6">Calculadora de Presupuestos</h1>
+                <h1 className="text-3xl font-bold mb-6">BudgetCalculadora</h1>
                 <div className="flex gap-4 justify-center">
                   <Link to="/login">
                     <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                      Ir al Administrador
+                      Editar
                     </button>
                   </Link>
                   <Link to="/user">
                     <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                      Ir al Usuario
+                      Calcular
                     </button>
                   </Link>
                 </div>
